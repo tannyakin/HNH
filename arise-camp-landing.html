@@ -10,674 +10,512 @@
   <script async src="https://tally.so/widgets/embed.js"></script>
 
   <style>
+    /* Variables and Reset */
     :root {
       --bg: #060606;
       --gold: #d4a84b;
-      --gold-dim: rgba(212,168,75,0.4);
-      --gold-glow: rgba(212,168,75,0.12);
       --green: #1a7a35;
       --text: #f0ede8;
-      --text-mid: rgba(240,237,232,0.7);
       --text-dim: rgba(240,237,232,0.4);
       --coral: #e07a5f;
       --teal: #7ec8c8;
       --border: rgba(212,168,75,0.18);
-      --border-soft: rgba(240,237,232,0.07);
     }
-
+    
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--bg);
+      background: #000; /* Behind everything */
       color: var(--text);
       font-family: 'Outfit', sans-serif;
       overflow-x: hidden;
       min-height: 100vh;
     }
 
-    /* Grain */
+    /* Spotlights & Ambient Textures */
+    .spotlight {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      background: radial-gradient(circle 800px at var(--x, 50vw) var(--y, 50vh), rgba(212,168,75,0.05), transparent 80%);
+    }
+
     .grain-overlay {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 999;
-      opacity: 0.035;
+      z-index: 998;
+      opacity: 0.04;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 300px 300px;
     }
 
-    /* Ambient background glows */
-    .ambient {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .ambient::before {
-      content: '';
-      position: absolute;
-      width: 600px; height: 600px;
-      top: -100px; right: -100px;
-      background: radial-gradient(circle, rgba(26,122,53,0.07) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    .ambient::after {
-      content: '';
-      position: absolute;
-      width: 500px; height: 500px;
-      bottom: 100px; left: -100px;
-      background: radial-gradient(circle, rgba(212,168,75,0.06) 0%, transparent 70%);
-      border-radius: 50%;
+    /* Parallax Footer Wrapper (Curtain) */
+    .site-wrapper {
+      position: relative;
+      z-index: 2;
+      background: var(--bg);
+      border-bottom-left-radius: 48px;
+      border-bottom-right-radius: 48px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+      overflow: hidden;
+      transition: margin-bottom 0.1s;
     }
 
-    /* ============================
-       NAVBAR
-    ============================ */
+    /* Navbar */
     .nav {
       position: fixed;
-      top: 20px;
+      top: 32px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 100;
       display: flex;
       align-items: center;
-      gap: 14px;
-      background: rgba(6,6,6,0.65);
+      gap: 16px;
+      background: rgba(10,10,10,0.4);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 100px;
-      padding: 10px 28px;
+      padding: 12px 32px;
       white-space: nowrap;
-      opacity: 0;
-      animation: nav-in 0.8s ease forwards 0.1s;
+      animation: nav-in 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
+    @keyframes nav-in { from { opacity: 0; transform: translate(-50%, -40px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    .nav-logo { height: 26px; filter: brightness(0) invert(1); opacity: 0.9; }
+    .nav-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+    .nav-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
 
-    @keyframes nav-in {
-      from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
-    .nav-logo {
-      height: 26px;
-      filter: brightness(0) invert(1);
-      opacity: 0.88;
-    }
-
-    .nav-sep {
-      width: 1px;
-      height: 18px;
-      background: var(--border);
-    }
-
-    .nav-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    /* ============================
-       HERO
-    ============================ */
+    /* Hero */
     .hero {
       position: relative;
-      z-index: 1;
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.1fr;
       align-items: center;
-      gap: 0;
-      padding: 120px 72px 80px;
+      padding: 160px 8vw 120px;
+      gap: 6vw;
     }
 
-    /* -- Flyer column -- */
-    .hero-visual {
+    /* 3D Flyer Interactivity */
+    .flyer-container {
+      perspective: 1500px;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       position: relative;
+      animation: fade-up 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards 0.2s;
+      opacity: 0;
     }
-
     .flyer-wrap {
       position: relative;
       width: 100%;
-      max-width: 400px;
-      opacity: 0;
-      transform: translateY(24px) rotate(-3deg);
-      animation: flyer-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.4s;
+      max-width: 460px;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
     }
-
-    @keyframes flyer-in {
-      to { opacity: 1; transform: translateY(0) rotate(-2.5deg); }
-    }
-
-    .flyer-float {
-      animation: float 7s ease-in-out infinite 1.5s;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px)   rotate(-2.5deg); }
-      50%       { transform: translateY(-14px) rotate(-1.8deg); }
-    }
-
-    .flyer-halo {
-      position: absolute;
-      inset: -32px;
-      border-radius: 20px;
-      background: radial-gradient(ellipse at 50% 50%, rgba(212,168,75,0.18) 0%, transparent 65%);
-      animation: halo-pulse 4s ease-in-out infinite;
-    }
-
-    @keyframes halo-pulse {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50%       { opacity: 1;   transform: scale(1.04); }
-    }
-
     .flyer-img {
       width: 100%;
-      border-radius: 14px;
+      border-radius: 18px;
       position: relative;
-      z-index: 1;
-      box-shadow:
-        0 0   40px rgba(212,168,75,0.18),
-        0 24px 80px rgba(0,0,0,0.75),
-        0 60px 120px rgba(0,0,0,0.5);
-    }
-
-    /* Coral accent stripe from flyer */
-    .flyer-strip {
-      position: absolute;
-      bottom: -10px;
-      left: 10%;
-      right: 10%;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--coral), var(--teal), transparent);
-      border-radius: 4px;
       z-index: 2;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06);
+      transform: translateZ(40px);
+    }
+    .flyer-glare {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      z-index: 3;
+      background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgba(255,255,255,0.2) 0%, transparent 70%);
+      pointer-events: none;
+      transform: translateZ(42px);
+      mix-blend-mode: overlay;
       opacity: 0.7;
     }
-
-    /* -- Info column -- */
-    .hero-info {
-      padding-left: 56px;
+    .flyer-shadow {
+      position: absolute;
+      inset: -30px;
+      background: radial-gradient(circle, rgba(212,168,75,0.15) 0%, transparent 65%);
+      transform: translateZ(-20px);
+      filter: blur(25px);
+      border-radius: 50%;
     }
 
+    /* Hero Typography & Info */
+    .hero-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      perspective: 1000px;
+    }
     .info-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       font-family: 'Space Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: 0.22em;
+      font-size: 10px;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--gold);
-      border: 1px solid rgba(212,168,75,0.28);
+      border: 1px solid rgba(212,168,75,0.25);
       border-radius: 100px;
-      padding: 6px 16px;
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 0.5s;
+      padding: 8px 24px;
+      margin-bottom: 40px;
+      background: rgba(212,168,75,0.04);
+      backdrop-filter: blur(12px);
+      animation: fade-in-up 1s ease forwards 0.3s; opacity: 0;
     }
     .info-badge::before {
       content: '';
-      width: 5px; height: 5px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--gold);
-      animation: dot-blink 2.5s ease-in-out infinite;
+      box-shadow: 0 0 10px var(--gold);
+      animation: pulse-dot 2s infinite;
     }
-    @keyframes dot-blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.25; }
-    }
-
-    .info-sup {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 10px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 0.65s;
-    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     .info-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(60px, 6.5vw, 92px);
+      font-size: clamp(80px, 9vw, 130px);
       font-weight: 300;
-      line-height: 0.92;
+      line-height: 0.85;
       color: var(--text);
-      margin-bottom: 6px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 0.75s;
+      margin-bottom: 12px;
+      animation: fade-in-up 1s ease forwards 0.4s; opacity: 0;
+      letter-spacing: -0.02em;
     }
-    .info-title em {
-      color: var(--gold);
-      font-style: italic;
-    }
-
+    .info-title em { color: var(--gold); font-style: italic; font-weight: 400; }
+    
     .info-sub {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(15px, 1.6vw, 20px);
-      font-weight: 400;
+      font-size: clamp(20px, 2.2vw, 28px);
       font-style: italic;
       color: var(--coral);
-      letter-spacing: 0.04em;
-      margin-bottom: 36px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 0.85s;
-    }
-
-    .gold-line {
-      width: 54px; height: 1px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: line-grow 0.8s ease forwards 0.95s;
-    }
-    @keyframes line-grow {
-      from { width: 0; opacity: 0; }
-      to   { width: 54px; opacity: 1; }
+      margin-bottom: 56px;
+      animation: fade-in-up 1s ease forwards 0.5s; opacity: 0;
     }
 
     .meta-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 1.05s;
+      gap: 24px;
+      margin-bottom: 64px;
+      animation: fade-in-up 1s ease forwards 0.6s; opacity: 0;
     }
-
-    .meta-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
+    .meta-item { display: flex; align-items: flex-start; gap: 20px; }
     .meta-icon-box {
-      width: 34px; height: 34px;
-      border: 1px solid var(--border-soft);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
+      width: 48px; height: 48px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
       background: rgba(255,255,255,0.02);
-    }
-
-    .meta-key {
-      font-family: 'Space Mono', monospace;
-      font-size: 8.5px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 2px;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.01);
     }
-    .meta-val {
-      font-size: 13.5px;
-      color: var(--text-mid);
-      line-height: 1.45;
-    }
+    .meta-key { font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .meta-val { font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 300; }
 
-    .scripture-block {
-      border-left: 2px solid var(--gold);
-      padding: 4px 0 4px 20px;
-      margin-bottom: 40px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 1.15s;
-    }
-
-    .scripture-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 16px;
-      font-style: italic;
-      color: var(--text-mid);
-      line-height: 1.65;
-    }
-
-    .scripture-ref {
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      margin-top: 8px;
-      display: block;
-    }
-
-    /* -- Role selector -- */
-    .role-prompt {
-      font-family: 'Space Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 14px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 1.25s;
-    }
-
+    /* Magnetic Glass Buttons */
     .role-grid {
-      display: flex;
-      gap: 10px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 1.35s;
+      display: flex; gap: 20px; width: 100%;
+      animation: fade-in-up 1s ease forwards 0.7s; opacity: 0;
     }
-
     .role-btn {
       flex: 1;
       position: relative;
-      overflow: hidden;
-      background: rgba(255,255,255,0.025);
-      border: 1px solid var(--border-soft);
-      border-radius: 14px;
-      padding: 20px 14px 18px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 32px 16px;
       cursor: pointer;
       text-align: center;
-      transition: border-color 0.4s ease, transform 0.35s ease, background 0.4s ease;
+      overflow: hidden;
+      transition: background 0.4s, border-color 0.4s;
       outline: none;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      backdrop-filter: blur(12px);
     }
-
-    .role-btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      border-radius: 14px;
+    .magnetic-wrap { display: inline-block; width: 100%; }
+    
+    /* Radial hover glow inside buttons */
+    .role-btn::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(800px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.08), transparent 40%);
+      opacity: 0; transition: opacity 0.4s ease;
+      z-index: 0;
     }
+    .role-btn:hover::before { opacity: 1; }
+    .role-btn:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); }
+    
+    .role-icon-wrap { font-size: 28px; margin-bottom: 16px; transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1); position: relative; z-index: 1; }
+    .role-btn:hover .role-icon-wrap { transform: scale(1.15) translateY(-4px); }
+    
+    .role-name-text { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--text); transition: color 0.3s; position: relative; z-index: 1; }
+    .role-btn.camper:hover .role-name-text { color: var(--gold); }
+    .role-btn.teacher:hover .role-name-text { color: #4ade80; }
+    .role-btn.volunteer:hover .role-name-text { color: var(--teal); }
+    
+    .role-caret { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 12px; letter-spacing: 0.15em; text-transform: uppercase; position: relative; z-index: 1; }
 
-    .role-btn.camper::after    { background: radial-gradient(ellipse at 50% 80%, rgba(212,168,75,0.13) 0%, transparent 70%); }
-    .role-btn.teacher::after   { background: radial-gradient(ellipse at 50% 80%, rgba(26,122,53,0.18) 0%, transparent 70%); }
-    .role-btn.volunteer::after { background: radial-gradient(ellipse at 50% 80%, rgba(126,200,200,0.13) 0%, transparent 70%); }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-    .role-btn:hover {
-      transform: translateY(-3px);
-      background: rgba(255,255,255,0.04);
-    }
-    .role-btn:hover::after { opacity: 1; }
-
-    .role-btn.active {
-      transform: translateY(-3px);
-      background: rgba(255,255,255,0.04);
-    }
-    .role-btn.active::after { opacity: 1; }
-    .role-btn.active.camper    { border-color: var(--gold); }
-    .role-btn.active.teacher   { border-color: #4ade80; }
-    .role-btn.active.volunteer { border-color: var(--teal); }
-
-    .role-icon-wrap {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 10px;
-      font-size: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border-soft);
-      transition: background 0.3s, border-color 0.3s;
-      position: relative; z-index: 1;
-    }
-
-    .role-btn.active.camper    .role-icon-wrap { border-color: rgba(212,168,75,0.5); background: rgba(212,168,75,0.08); }
-    .role-btn.active.teacher   .role-icon-wrap { border-color: rgba(74,222,128,0.5); background: rgba(74,222,128,0.08); }
-    .role-btn.active.volunteer .role-icon-wrap { border-color: rgba(126,200,200,0.5); background: rgba(126,200,200,0.08); }
-
-    .role-name-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 19px;
-      font-weight: 500;
-      color: var(--text);
-      transition: color 0.3s;
-      position: relative; z-index: 1;
-      display: block;
-    }
-
-    .role-btn.active.camper    .role-name-text { color: var(--gold); }
-    .role-btn.active.teacher   .role-name-text { color: #4ade80; }
-    .role-btn.active.volunteer .role-name-text { color: var(--teal); }
-
-    .role-caret {
-      display: block;
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      margin-top: 5px;
-      letter-spacing: 0.1em;
-      transition: color 0.3s;
-      position: relative; z-index: 1;
-    }
-
-    .role-btn.active .role-caret { color: var(--gold); }
-
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Scroll hint */
-    .scroll-hint {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
+    /* Premium Negative Footer */
+    .site-footer {
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      height: 70vh;
+      background: #000;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      opacity: 0;
-      animation: fade-up 0.8s ease forwards 2s;
-    }
-
-    .scroll-line-anim {
-      width: 1px; height: 36px;
+      justify-content: center;
+      padding: 40px;
       overflow: hidden;
-      position: relative;
     }
-    .scroll-line-anim::before {
-      content: '';
+    .footer-watermark {
       position: absolute;
-      top: 0; left: 0;
-      width: 1px; height: 100%;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-      animation: scroll-drip 2s ease-in-out infinite;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 32vw;
+      color: rgba(255,255,255,0.015);
+      line-height: 1;
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: -0.04em;
     }
-    @keyframes scroll-drip {
-      0%   { transform: translateY(-100%); opacity: 1; }
-      100% { transform: translateY(100%);  opacity: 0; }
-    }
-
-    .scroll-hint-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 7.5px;
-      letter-spacing: 0.2em;
-      color: var(--text-dim);
-      text-transform: uppercase;
-    }
-
-    /* ============================
-       FOOTER
-    ============================ */
-    .site-footer {
+    .footer-content {
       position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border-soft);
-      padding: 36px 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .footer-logo { height: 28px; filter: brightness(0) invert(1); opacity: 0.45; }
-
-    .footer-center {
+      z-index: 2;
       text-align: center;
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      color: var(--text-dim);
-      line-height: 1.7;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .footer-logo { height: 48px; filter: brightness(0) invert(1); opacity: 0.7; margin-bottom: 40px; }
+    
+    .footer-text {
+      font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: rgba(255,255,255,0.3); line-height: 2; text-transform: uppercase;
     }
 
-    .footer-links-row { display: flex; gap: 20px; }
+    .footer-links-row {
+      display: flex; gap: 48px; justify-content: center; margin-top: 56px;
+    }
     .footer-link {
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      color: var(--text-dim);
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 0.3s;
+      font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.6); text-decoration: none; text-transform: uppercase;
+      transition: color 0.4s, text-shadow 0.4s;
     }
-    .footer-link:hover { color: var(--gold); }
+    .footer-link:hover { color: var(--gold); text-shadow: 0 0 20px rgba(212,168,75,0.4); }
 
-    /* ============================
-       RESPONSIVE
-    ============================ */
-    @media (max-width: 860px) {
-      .hero {
-        grid-template-columns: 1fr;
-        padding: 96px 24px 72px;
-        gap: 48px;
-      }
-      .hero-info { padding-left: 0; }
-      .flyer-wrap { max-width: 260px; margin: 0 auto; }
-      .site-footer {
-        flex-direction: column;
-        padding: 32px 24px;
-        text-align: center;
-      }
-      .role-grid { gap: 8px; }
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; padding: 160px 5vw 100px; text-align: center; gap: 80px; }
+      .hero-info { align-items: center; }
+      .meta-list { align-items: center; }
+      .meta-item { text-align: left; }
     }
-
-    @media (max-width: 480px) {
-      .hero { padding: 88px 20px 64px; }
-      .info-title { font-size: 52px; }
-      .role-btn { padding: 16px 8px 14px; }
-      .role-name-text { font-size: 16px; }
+    @media (max-width: 768px) {
+      .role-grid { flex-direction: column; gap: 16px; }
+      .site-footer { height: auto; padding: 80px 20px; position: relative; z-index: 2; border-top: 1px solid rgba(255,255,255,0.05); }
+      .footer-watermark { display: none; }
+      .site-wrapper { border-radius: 0; margin-bottom: 0 !important; box-shadow: none; }
+      .info-title { font-size: clamp(60px, 15vw, 80px); }
     }
   </style>
 </head>
 <body>
 
+  <!-- Spotlights & Grain -->
+  <div class="spotlight" aria-hidden="true"></div>
   <div class="grain-overlay" aria-hidden="true"></div>
-  <div class="ambient" aria-hidden="true"></div>
 
-  <!-- NAVBAR -->
-  <nav class="nav" aria-label="Site navigation">
-    <img class="nav-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
-    <div class="nav-sep" aria-hidden="true"></div>
-    <span class="nav-label">Summer Camp 2026</span>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero" aria-label="Event details">
-
-    <!-- Flyer -->
-    <div class="hero-visual" aria-hidden="true">
-      <div class="flyer-wrap">
-        <div class="flyer-halo"></div>
-        <div class="flyer-float">
-          <img class="flyer-img" src="lp35summercamp.jpeg" alt="ARISE Summer Camp 2026 flyer">
-          <div class="flyer-strip"></div>
-        </div>
+  <!-- Negative Footer sits at the bottom -->
+  <footer class="site-footer" id="negativeFooter">
+    <div class="footer-watermark">ARISE</div>
+    <div class="footer-content">
+      <img class="footer-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
+      <div class="footer-text">
+        Harvest House<br>Teenage Church of RCCG ChristChurch<br>Lagos Province 35
       </div>
-    </div>
-
-    <!-- Info -->
-    <div class="hero-info">
-
-      <div class="info-badge">Harvest House · LP35 · 2026</div>
-
-      <p class="info-sup">Summer Programme Presents</p>
-
-      <h1 class="info-title">AR<em>ISE</em><br>Rise Up!</h1>
-
-      <p class="info-sub">Come spend this summer with God</p>
-
-      <div class="gold-line" aria-hidden="true"></div>
-
-      <ul class="meta-list" aria-label="Event details">
-        <li class="meta-item">
-          <div class="meta-icon-box" aria-hidden="true">📅</div>
-          <div>
-            <div class="meta-key">Programme Dates</div>
-            <div class="meta-val">June 28 — August 23, 2026</div>
-          </div>
-        </li>
-        <li class="meta-item">
-          <div class="meta-icon-box" aria-hidden="true">⛺</div>
-          <div>
-            <div class="meta-key">Summer Camp</div>
-            <div class="meta-val">August 1 — 4, 2026</div>
-          </div>
-        </li>
-        <li class="meta-item">
-          <div class="meta-icon-box" aria-hidden="true">📍</div>
-          <div>
-            <div class="meta-key">Location</div>
-            <div class="meta-val">Harvest House Auditorium<br>Block A, Plot 6 · Redemption Crescent<br>Gbagada-Oshodi Expressway, Lagos</div>
-          </div>
-        </li>
-      </ul>
-
-      <div class="scripture-block">
-        <p class="scripture-text">
-          "You are the light of the world.<br>A city set on a hill cannot be hidden."
-        </p>
-        <span class="scripture-ref">— Matthew 5 : 14 – 16</span>
+      <div class="footer-links-row">
+        <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="mailto:harvesthouseteenschurch@gmail.com" class="footer-link">Email</a>
       </div>
-
-      <!-- Role selector -->
-      <p class="role-prompt">Register as —</p>
-
-      <div class="role-grid" role="group" aria-label="Select your registration type">
-        <button class="role-btn camper"    onclick="selectRole('camper')">
-          <span class="role-icon-wrap" aria-hidden="true">🎒</span>
-          <span class="role-name-text">Camper</span>
-          <span class="role-caret">Register</span>
-        </button>
-        <button class="role-btn teacher"   onclick="selectRole('teacher')">
-          <span class="role-icon-wrap" aria-hidden="true">📖</span>
-          <span class="role-name-text">Teacher</span>
-          <span class="role-caret">Register</span>
-        </button>
-        <button class="role-btn volunteer" onclick="selectRole('volunteer')">
-          <span class="role-icon-wrap" aria-hidden="true">🤝</span>
-          <span class="role-name-text">Volunteer</span>
-          <span class="role-caret">Register</span>
-        </button>
-      </div>
-
-    </div><!-- /hero-info -->
-
-    <div class="scroll-hint" aria-hidden="true">
-      <div class="scroll-line-anim"></div>
-      <span class="scroll-hint-text">Select a role</span>
-    </div>
-
-  </section><!-- /hero -->
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <img class="footer-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
-    <div class="footer-center">
-      Harvest House · Teenage Church of RCCG ChristChurch<br>
-      Lagos Province 35
-    </div>
-    <div class="footer-links-row">
-      <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank" rel="noopener">WhatsApp</a>
-      <a href="mailto:harvesthouseteenschurch@gmail.com" class="footer-link">Email</a>
     </div>
   </footer>
 
+  <!-- Main Content Wrapper acts as the sliding curtain -->
+  <div class="site-wrapper" id="siteWrapper">
+
+    <nav class="nav" aria-label="Site navigation">
+      <img class="nav-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
+      <div class="nav-sep"></div>
+      <span class="nav-label">Summer Camp 2026</span>
+    </nav>
+
+    <section class="hero" aria-label="Event details">
+      
+      <!-- 3D Flyer -->
+      <div class="flyer-container">
+        <div class="flyer-wrap" id="flyerWrap">
+          <div class="flyer-shadow"></div>
+          <img class="flyer-img" src="lp35summercamp.jpeg" alt="ARISE Summer Camp">
+          <div class="flyer-glare" id="flyerGlare"></div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="hero-info">
+        <div class="info-badge">Harvest House · LP35</div>
+        <h1 class="info-title">AR<em>ISE</em><br>Rise Up!</h1>
+        <p class="info-sub">Come spend this summer with God</p>
+
+        <ul class="meta-list">
+          <li class="meta-item">
+            <div class="meta-icon-box">📅</div>
+            <div>
+              <div class="meta-key">Dates</div>
+              <div class="meta-val">Camp: Aug 1 — 4, 2026<br>Prog: Jun 28 — Aug 23</div>
+            </div>
+          </li>
+          <li class="meta-item">
+            <div class="meta-icon-box">📍</div>
+            <div>
+              <div class="meta-key">Location</div>
+              <div class="meta-val">Harvest House Auditorium<br>Redemption Crescent, Gbagada</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Magnetic Popups Buttons -->
+        <div class="role-grid">
+          <div class="magnetic-wrap">
+            <button class="role-btn camper" onclick="selectRole('camper')">
+              <span class="role-icon-wrap">🎒</span>
+              <span class="role-name-text">Camper</span>
+              <span class="role-caret">Register</span>
+            </button>
+          </div>
+          <div class="magnetic-wrap">
+            <button class="role-btn teacher" onclick="selectRole('teacher')">
+              <span class="role-icon-wrap">📖</span>
+              <span class="role-name-text">Teacher</span>
+              <span class="role-caret">Register</span>
+            </button>
+          </div>
+          <div class="magnetic-wrap">
+            <button class="role-btn volunteer" onclick="selectRole('volunteer')">
+              <span class="role-icon-wrap">🤝</span>
+              <span class="role-name-text">Volunteer</span>
+              <span class="role-caret">Register</span>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+  </div> <!-- End Site Wrapper -->
+
   <script>
+    // Negative Footer Dynamic Margin Calculation
+    function updateFooterMargin() {
+      // Only apply parallax footer on screens wider than 768px
+      if (window.innerWidth > 768) {
+        const footerHeight = document.getElementById('negativeFooter').offsetHeight;
+        document.getElementById('siteWrapper').style.marginBottom = footerHeight + 'px';
+      } else {
+        document.getElementById('siteWrapper').style.marginBottom = '0px';
+      }
+    }
+    // Delay slightly to ensure fonts are loaded and height is accurate
+    window.addEventListener('load', () => setTimeout(updateFooterMargin, 100));
+    window.addEventListener('resize', updateFooterMargin);
+
+    // Global Spotlight Mouse Tracking
+    const spotlight = document.querySelector('.spotlight');
+    window.addEventListener('mousemove', (e) => {
+      spotlight.style.setProperty('--x', e.clientX + 'px');
+      spotlight.style.setProperty('--y', e.clientY + 'px');
+    });
+
+    // 3D Tilt Flyer Interactivity
+    const flyerContainer = document.querySelector('.flyer-container');
+    const flyerWrap = document.getElementById('flyerWrap');
+    const flyerGlare = document.getElementById('flyerGlare');
+
+    flyerContainer.addEventListener('mousemove', (e) => {
+      const rect = flyerContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left; 
+      const y = e.clientY - rect.top;  
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate rotation based on cursor position (-15 to 15 degrees)
+      const rotateX = ((y - centerY) / centerY) * -15; 
+      const rotateY = ((x - centerX) / centerX) * 15;
+      
+      flyerWrap.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      
+      // Move glare
+      flyerGlare.style.setProperty('--px', (x / rect.width) * 100 + '%');
+      flyerGlare.style.setProperty('--py', (y / rect.height) * 100 + '%');
+    });
+
+    flyerContainer.addEventListener('mouseleave', () => {
+      // Reset rotation on leave
+      flyerWrap.style.transform = `rotateX(0deg) rotateY(0deg)`;
+      flyerWrap.style.transition = `transform 0.6s cubic-bezier(0.2, 1, 0.3, 1)`;
+      setTimeout(() => { flyerWrap.style.transition = `transform 0.1s ease-out`; }, 600);
+      
+      // Reset glare
+      flyerGlare.style.setProperty('--px', '50%');
+      flyerGlare.style.setProperty('--py', '50%');
+    });
+
+    // Magnetic Buttons Hover Effect
+    const magneticWraps = document.querySelectorAll('.magnetic-wrap');
+    magneticWraps.forEach(wrap => {
+      const btn = wrap.querySelector('.role-btn');
+      wrap.addEventListener('mousemove', (e) => {
+        const rect = wrap.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Pass mouse coordinates to CSS for radial gradient glow
+        btn.style.setProperty('--mx', x + 'px');
+        btn.style.setProperty('--my', y + 'px');
+        
+        // Calculate magnetic translation (max pull ~10-15px)
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const moveX = (x - centerX) * 0.15;
+        const moveY = (y - centerY) * 0.15;
+        
+        btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+      
+      wrap.addEventListener('mouseleave', () => {
+        // Snap back to center
+        btn.style.transform = `translate(0px, 0px)`;
+        btn.style.transition = `transform 0.5s cubic-bezier(0.2, 1, 0.3, 1)`;
+        setTimeout(() => { btn.style.transition = `background 0.4s, border-color 0.4s`; }, 500);
+      });
+    });
+
+    // Tally Popups Integration
     const roleData = {
       camper:    { formId: 'LZaBX2', emoji: '🎒' },
       teacher:   { formId: 'Y5JXlq', emoji: '📖', hideTitle: true, alignLeft: true },
@@ -685,21 +523,19 @@
     };
 
     function selectRole(role) {
-      if (!window.Tally) return;
-
+      if (!window.Tally) {
+        console.warn('Tally script not loaded yet.');
+        return;
+      }
       const data = roleData[role];
       const options = {
         layout: 'modal',
         width: 800,
-        emoji: {
-          text: data.emoji,
-          animation: 'wave'
-        }
+        emoji: { text: data.emoji, animation: 'wave' }
       };
-
       if (data.hideTitle) options.hideTitle = true;
       if (data.alignLeft) options.alignLeft = true;
-
+      
       Tally.openPopup(data.formId, options);
     }
   </script>
