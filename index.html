@@ -171,32 +171,26 @@
       width: 100%;
       max-width: 600px;
     }
-    .info-badge {
-      display: inline-flex;
+    .editorial-kicker {
+      display: flex;
       align-items: center;
-      gap: 12px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--harvest-green);
-      font-weight: 700;
-      border: 1px solid rgba(0, 146, 74, 0.2);
-      border-radius: 100px;
-      padding: 8px 24px;
-      margin-bottom: 40px;
-      background: rgba(0, 146, 74, 0.05);
+      gap: 16px;
+      margin-bottom: 32px;
       animation: fade-in-up 1s ease forwards 0.3s; opacity: 0;
     }
-    .info-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
+    .kicker-line {
+      width: 48px;
+      height: 1px;
       background: var(--harvest-green);
-      box-shadow: 0 0 10px var(--harvest-green);
-      animation: pulse-dot 2s infinite;
     }
-    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .kicker-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--harvest-dark);
+      font-weight: 700;
+    }
 
     .info-title {
       font-family: var(--font-serif);
@@ -407,7 +401,10 @@
 
       <!-- Content -->
       <div class="hero-info">
-        <div class="info-badge">Harvest House · LP35</div>
+        <div class="editorial-kicker">
+          <div class="kicker-line"></div>
+          <span class="kicker-text">Harvest House · LP35</span>
+        </div>
         <h1 class="info-title">AR<em>ISE</em><br>Rise Up!</h1>
         <p class="info-sub">Come spend this summer with God</p>
 
