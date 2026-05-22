@@ -332,7 +332,7 @@
     }
 
     .footer-links-row {
-      display: flex; gap: 48px; justify-content: center; margin-top: 56px;
+      display: flex; gap: 48px; justify-content: center; margin-top: 56px; flex-wrap: wrap;
     }
     .footer-link {
       font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.15em;
@@ -351,7 +351,7 @@
     @media (max-width: 768px) {
       .nav { width: 85%; }
       .site-footer { height: auto; padding: 80px 20px; position: relative; z-index: 2; border-top: 1px solid rgba(0, 146, 74, 0.1); }
-      .footer-watermark { display: none; }
+      .footer-watermark { display: flex; align-items: center; justify-content: center; font-size: 20vw; opacity: 0.05; }
       .site-wrapper { border-radius: 0; margin-bottom: 0 !important; box-shadow: none; }
       .info-title { font-size: clamp(60px, 15vw, 80px); }
       .role-btn { padding: 20px 24px; gap: 16px; }
@@ -366,23 +366,6 @@
   <div class="spotlight" aria-hidden="true"></div>
   <div class="grain-overlay" aria-hidden="true"></div>
 
-  <!-- Vibrant Negative Footer -->
-  <footer class="site-footer" id="negativeFooter">
-    <div class="footer-watermark">HARVEST<br>HOUSE</div>
-    <div class="footer-content">
-      <img class="footer-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
-      <div class="footer-text">
-        Harvest House<br>Teenage Church of RCCG ChristChurch<br>Lagos Province 35
-      </div>
-      <div class="footer-links-row">
-        <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank" rel="noopener">WhatsApp</a>
-        <a href="mailto:harvesthouseteenschurch@gmail.com" class="footer-link">Email</a>
-        <a href="#" class="footer-link">YouTube</a>
-        <a href="#" class="footer-link">Facebook</a>
-      </div>
-    </div>
-  </footer>
 
   <!-- Main Content Wrapper acts as the sliding curtain -->
   <div class="site-wrapper" id="siteWrapper">
@@ -459,6 +442,24 @@
     </section>
 
   </div> <!-- End Site Wrapper -->
+
+  <!-- Vibrant Negative Footer -->
+  <footer class="site-footer" id="negativeFooter">
+    <div class="footer-watermark">HARVEST<br>HOUSE</div>
+    <div class="footer-content">
+      <img class="footer-logo" src="HH%20LOGO%20PNG.png" alt="Harvest House">
+      <div class="footer-text">
+        Harvest House<br>Teenage Church of RCCG ChristChurch<br>Lagos Province 35
+      </div>
+      <div class="footer-links-row">
+        <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="mailto:harvesthouseteenschurch@gmail.com" class="footer-link">Email</a>
+        <a href="#" class="footer-link">YouTube</a>
+        <a href="#" class="footer-link">Facebook</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
     // Negative Footer Dynamic Margin Calculation
