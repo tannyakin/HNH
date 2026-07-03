@@ -54,8 +54,22 @@ The site triggers Tally.so forms using their Javascript API (`Tally.openPopup`).
 - The `roleData` object in the `<script>` block controls which form ID is mapped to which button.
 - We explicitly disable Tally's native emojis in the configuration options to keep the UI strictly aligned with Phosphor icons.
 
-## 💻 Contribution Workflow
-1. Pull the latest code (`git pull`).
-2. Make your edits strictly to `index.html` (or add assets).
-3. Test by opening `index.html` locally in a browser or spinning up a simple local server (`python -m http.server`).
-4. Commit and push your changes to the `main` branch. Vercel will automatically deploy the updates.
+## 💻 Contribution Workflow (Professional Git Protocol)
+We follow a strict feature-branching workflow using Conventional Commits. **Never commit directly to the `main` branch.**
+
+1. **Start Clean:** Ensure you are on `main` and have the latest code.
+   - `git checkout main`
+   - `git pull`
+   - `git status` (Ensure working tree is clean)
+2. **Create Feature Branch:** Create a dedicated branch for your task.
+   - `git checkout -b feature/your-feature-name` (Use prefixes like `feature/`, `fix/`, `style/`, `docs/`)
+3. **Make Edits:** Edit `index.html` or add assets. Test your changes locally in a browser.
+4. **Stage & Commit:** Use Conventional Commits (`feat:`, `fix:`, `style:`, `docs:`).
+   - `git add index.html`
+   - `git commit -m "feat: description of changes"`
+5. **Push & PR:** Push your branch and open a Pull Request.
+   - `git push -u origin feature/your-feature-name`
+   - Review the PR on GitHub, merge it into `main`, and Vercel will automatically deploy.
+6. **Clean Up:** Switch back to main and pull the merged changes.
+   - `git checkout main`
+   - `git pull`
