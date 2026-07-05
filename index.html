@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ARISE Summer Camp 2026 · Harvest House</title>
   <link rel="icon" type="image/png" href="hhfav.png">
-  
+
   <!-- New Elegant Font System -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300..800&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
   <!-- Phosphor Icons (Premium SVG Icons) -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  
+
   <!-- Tally Forms -->
   <script async src="https://tally.so/widgets/embed.js"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <style>
     /* Variables and Reset */
     :root {
       /* Vibrant Light Theme */
-      --bg: #fdfaf6;            
-      --text: #0a2e1c;          
+      --bg: #fdfaf6;
+      --text: #0a2e1c;
       --text-dim: rgba(10, 46, 28, 0.6);
-      
+
       /* Extracted Logo Colors */
-      --harvest-green: #00924a; 
-      --harvest-dark: #00733a;  
-      --mint: #88d2a9;          
-      --coral: #e07a5f;         
-      
+      --harvest-green: #00924a;
+      --harvest-dark: #00733a;
+      --mint: #88d2a9;
+      --coral: #e07a5f;
+
       --border: rgba(0, 146, 74, 0.15);
 
       /* New Font System */
@@ -38,11 +45,21 @@
       --font-serif: 'Playfair Display', serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
-    
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background: var(--harvest-green); 
+      background: var(--harvest-green);
       color: var(--text);
       font-family: var(--font-sans);
       overflow-x: hidden;
@@ -52,8 +69,10 @@
     /* Spotlights & Ambient Textures */
     .spotlight {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: 999;
       background: radial-gradient(circle 800px at var(--x, 50vw) var(--y, 50vh), rgba(0, 146, 74, 0.05), transparent 80%);
@@ -75,7 +94,7 @@
       background: var(--bg);
       border-bottom-left-radius: 48px;
       border-bottom-right-radius: 48px;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.15);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
       overflow: hidden;
       transition: margin-bottom 0.1s;
     }
@@ -100,12 +119,40 @@
       padding: 12px 32px;
       white-space: nowrap;
       animation: nav-in 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
     }
-    @keyframes nav-in { from { opacity: 0; transform: translate(-50%, -40px); } to { opacity: 1; transform: translate(-50%, 0); } }
-    .nav-logo { height: 30px; opacity: 1; } 
-    .nav-sep { width: 1px; height: 16px; background: rgba(0,0,0,0.1); }
-    .nav-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--harvest-green); font-weight: 700; }
+
+    @keyframes nav-in {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    .nav-logo {
+      height: 30px;
+      opacity: 1;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 16px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--harvest-green);
+      font-weight: 700;
+    }
 
     /* Hero */
     .hero {
@@ -118,16 +165,61 @@
       gap: 6vw;
     }
 
-    /* 3D Flyer Interactivity */
+    /* 3D Flyer Interactivity & CTA */
+    .flyer-cta-header {
+      text-align: center;
+      margin-bottom: 32px;
+      z-index: 10;
+    }
+
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 400;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #ff3b30;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+    }
+
+    .cta-deadline {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--harvest-green);
+      font-weight: 700;
+    }
+
     .flyer-container {
       perspective: 1500px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       position: relative;
       animation: fade-up 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards 0.2s;
       opacity: 0;
     }
+
     .flyer-wrap {
       position: relative;
       width: 100%;
@@ -136,25 +228,28 @@
       transition: transform 0.1s ease-out;
       will-change: transform;
     }
+
     .flyer-img {
       width: 100%;
       border-radius: 18px;
       position: relative;
       z-index: 2;
-      box-shadow: 0 40px 100px rgba(0, 146, 74, 0.2), 0 0 0 1px rgba(0,0,0,0.04);
+      box-shadow: 0 40px 100px rgba(0, 146, 74, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.04);
       transform: translateZ(40px);
     }
+
     .flyer-glare {
       position: absolute;
       inset: 0;
       border-radius: 18px;
       z-index: 3;
-      background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgba(255,255,255,0.6) 0%, transparent 60%);
+      background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgba(255, 255, 255, 0.6) 0%, transparent 60%);
       pointer-events: none;
       transform: translateZ(42px);
       mix-blend-mode: overlay;
       opacity: 0.8;
     }
+
     .flyer-shadow {
       position: absolute;
       inset: -30px;
@@ -173,18 +268,22 @@
       width: 100%;
       max-width: 600px;
     }
+
     .editorial-kicker {
       display: flex;
       align-items: center;
       gap: 16px;
       margin-bottom: 32px;
-      animation: fade-in-up 1s ease forwards 0.3s; opacity: 0;
+      animation: fade-in-up 1s ease forwards 0.3s;
+      opacity: 0;
     }
+
     .kicker-line {
       width: 48px;
       height: 1px;
       background: var(--harvest-green);
     }
+
     .kicker-text {
       font-family: var(--font-mono);
       font-size: 10px;
@@ -201,18 +300,25 @@
       line-height: 0.9;
       color: var(--text);
       margin-bottom: 12px;
-      animation: fade-in-up 1s ease forwards 0.4s; opacity: 0;
+      animation: fade-in-up 1s ease forwards 0.4s;
+      opacity: 0;
       letter-spacing: -0.03em;
     }
-    .info-title em { color: var(--harvest-green); font-style: italic; font-weight: 500; }
-    
+
+    .info-title em {
+      color: var(--harvest-green);
+      font-style: italic;
+      font-weight: 500;
+    }
+
     .info-sub {
       font-family: var(--font-serif);
       font-size: clamp(20px, 2.2vw, 28px);
       font-style: italic;
       color: var(--coral);
       margin-bottom: 48px;
-      animation: fade-in-up 1s ease forwards 0.5s; opacity: 0;
+      animation: fade-in-up 1s ease forwards 0.5s;
+      opacity: 0;
     }
 
     .meta-list {
@@ -221,32 +327,62 @@
       flex-direction: column;
       gap: 24px;
       margin-bottom: 48px;
-      animation: fade-in-up 1s ease forwards 0.6s; opacity: 0;
+      animation: fade-in-up 1s ease forwards 0.6s;
+      opacity: 0;
     }
-    .meta-item { display: flex; align-items: flex-start; gap: 20px; }
+
+    .meta-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
     .meta-icon-box {
-      width: 48px; height: 48px;
+      width: 48px;
+      height: 48px;
       border: 1px solid rgba(0, 146, 74, 0.1);
       border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 24px;
       background: rgba(0, 146, 74, 0.04);
       color: var(--harvest-green);
       flex-shrink: 0;
     }
-    .meta-key { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; font-weight: 700; }
-    .meta-val { font-size: 16px; color: var(--text); line-height: 1.6; font-weight: 500; }
+
+    .meta-key {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .meta-val {
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: 500;
+    }
 
     /* Wide Stacked Magnetic Buttons */
     .role-grid {
-      display: flex; 
-      flex-direction: column; 
-      gap: 16px; 
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       width: 100%;
-      animation: fade-in-up 1s ease forwards 0.7s; opacity: 0;
+      animation: fade-in-up 1s ease forwards 0.7s;
+      opacity: 0;
     }
-    .magnetic-wrap { display: block; width: 100%; }
-    
+
+    .magnetic-wrap {
+      display: block;
+      width: 100%;
+    }
+
     .role-btn {
       width: 100%;
       position: relative;
@@ -259,39 +395,109 @@
       overflow: hidden;
       transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
       outline: none;
-      display: flex; 
-      flex-direction: row; 
-      align-items: center; 
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       gap: 24px;
       box-shadow: 0 10px 30px rgba(0, 146, 74, 0.04);
     }
-    
+
     /* Radial hover glow inside buttons */
     .role-btn::before {
-      content: ''; position: absolute; inset: 0;
+      content: '';
+      position: absolute;
+      inset: 0;
       background: radial-gradient(800px circle at var(--mx, 50%) var(--my, 50%), rgba(0, 146, 74, 0.06), transparent 40%);
-      opacity: 0; transition: opacity 0.4s ease;
+      opacity: 0;
+      transition: opacity 0.4s ease;
       z-index: 0;
     }
-    .role-btn:hover::before { opacity: 1; }
-    .role-btn:hover { background: #ffffff; border-color: rgba(0, 146, 74, 0.3); box-shadow: 0 20px 40px rgba(0, 146, 74, 0.08); }
-    
-    .role-icon-wrap { font-size: 32px; transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1), color 0.3s; position: relative; z-index: 1; color: var(--text); flex-shrink: 0; }
-    .role-btn:hover .role-icon-wrap { transform: scale(1.15); color: var(--harvest-green); }
-    
-    .role-name-text { font-family: var(--font-serif); font-size: 26px; font-weight: 500; color: var(--text); transition: color 0.3s; position: relative; z-index: 1; flex-grow: 1; }
-    .role-btn:hover .role-name-text { color: var(--harvest-green); }
-    
-    .role-caret { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase; position: relative; z-index: 1; transition: color 0.3s; }
-    .role-btn:hover .role-caret { color: var(--harvest-green); }
 
-    @keyframes fade-up { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .role-btn:hover::before {
+      opacity: 1;
+    }
+
+    .role-btn:hover {
+      background: #ffffff;
+      border-color: rgba(0, 146, 74, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 146, 74, 0.08);
+    }
+
+    .role-icon-wrap {
+      font-size: 32px;
+      transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1), color 0.3s;
+      position: relative;
+      z-index: 1;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .role-btn:hover .role-icon-wrap {
+      transform: scale(1.15);
+      color: var(--harvest-green);
+    }
+
+    .role-name-text {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--text);
+      transition: color 0.3s;
+      position: relative;
+      z-index: 1;
+      flex-grow: 1;
+    }
+
+    .role-btn:hover .role-name-text {
+      color: var(--harvest-green);
+    }
+
+    .role-caret {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s;
+    }
+
+    .role-btn:hover .role-caret {
+      color: var(--harvest-green);
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* Vibrant Negative Footer */
     .site-footer {
       position: fixed;
-      bottom: 0; left: 0; width: 100%;
+      bottom: 0;
+      left: 0;
+      width: 100%;
       height: 70vh;
       background: var(--harvest-green);
       z-index: 1;
@@ -302,64 +508,571 @@
       padding: 40px;
       overflow: hidden;
     }
-    
+
     /* HARVEST HOUSE Multi-line watermark */
     .footer-watermark {
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       font-family: var(--font-sans);
       font-weight: 800;
-      font-size: 16vw; 
-      color: rgba(255,255,255,0.06); 
+      font-size: 16vw;
+      color: rgba(255, 255, 255, 0.06);
       line-height: 0.85;
       pointer-events: none;
       white-space: nowrap;
       letter-spacing: -0.04em;
       text-align: center;
     }
-    
+
     .footer-content {
       position: relative;
       z-index: 2;
       text-align: center;
-      display: flex; flex-direction: column; align-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .footer-logo { height: 48px; filter: brightness(0) invert(1); opacity: 0.9; margin-bottom: 40px; } 
-    
+
+    .footer-logo {
+      height: 48px;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
     .footer-text {
-      font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.15em; color: rgba(255,255,255,0.8); line-height: 2; text-transform: uppercase;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 2;
+      text-transform: uppercase;
     }
 
     .footer-links-row {
-      display: flex; gap: 48px; justify-content: center; margin-top: 56px; flex-wrap: wrap;
+      display: flex;
+      gap: 48px;
+      justify-content: center;
+      margin-top: 56px;
+      flex-wrap: wrap;
     }
+
     .footer-link {
-      font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.15em;
-      color: rgba(255,255,255,0.9); text-decoration: none; text-transform: uppercase;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      text-transform: uppercase;
       transition: color 0.4s, text-shadow 0.4s;
     }
-    .footer-link:hover { color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+
+    .footer-link:hover {
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
 
     /* Responsive adjustments */
     @media (max-width: 1024px) {
-      .hero { grid-template-columns: 1fr; padding: 160px 5vw 100px; gap: 80px; justify-items: center; }
-      .hero-info { align-items: center; }
-      .meta-list { align-items: center; }
-      .meta-item { text-align: left; }
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 160px 5vw 100px;
+        gap: 80px;
+        justify-items: center;
+      }
+
+      .hero-info {
+        align-items: center;
+      }
+
+      .meta-list {
+        align-items: center;
+      }
+
+      .meta-item {
+        text-align: left;
+      }
     }
+
     @media (max-width: 768px) {
-      .nav { width: 85%; }
-      .site-footer { height: auto; padding: 80px 20px; position: relative; z-index: 2; border-top: 1px solid rgba(0, 146, 74, 0.1); }
-      .footer-watermark { display: flex; align-items: center; justify-content: center; font-size: 20vw; opacity: 0.05; }
-      .site-wrapper { border-radius: 0; margin-bottom: 0 !important; box-shadow: none; }
-      .info-title { font-size: clamp(60px, 15vw, 80px); }
-      .role-btn { padding: 20px 24px; gap: 16px; }
-      .role-name-text { font-size: 22px; }
-      .role-icon-wrap { font-size: 26px; }
+      .nav {
+        width: 85%;
+      }
+
+      .site-footer {
+        height: auto;
+        padding: 80px 20px;
+        position: relative;
+        z-index: 2;
+        border-top: 1px solid rgba(0, 146, 74, 0.1);
+      }
+
+      .footer-watermark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20vw;
+        opacity: 0.05;
+      }
+
+      .site-wrapper {
+        border-radius: 0;
+        margin-bottom: 0 !important;
+        box-shadow: none;
+      }
+
+      .info-title {
+        font-size: clamp(60px, 15vw, 80px);
+      }
+
+      .role-btn {
+        padding: 20px 24px;
+        gap: 16px;
+      }
+
+      .role-name-text {
+        font-size: 22px;
+      }
+
+      .role-icon-wrap {
+        font-size: 26px;
+      }
+    }
+
+    /* --- NEW SECTIONS CSS --- */
+    .section-pad {
+      padding: 100px 8vw;
+      position: relative;
+      z-index: 2;
+      background: var(--bg);
+    }
+
+    .about-sec {
+      text-align: center;
+    }
+
+    .about-text {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(32px, 5vw, 64px);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .about-text em {
+      color: var(--harvest-green);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .word {
+      opacity: 0.15;
+    }
+
+    /* Vertical Roadmap */
+    .roadmap-wrapper {
+      background: var(--bg);
+      position: relative;
+      z-index: 2;
+      padding: 60px 8vw 120px;
+    }
+
+    .roadmap-header {
+      margin-bottom: 60px;
+    }
+
+    .roadmap-header h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 5vw, 56px);
+      color: var(--text);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .roadmap-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .roadmap-track {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background: rgba(0, 146, 74, 0.1);
+      transform: translateX(-50%);
+    }
+
+    .roadmap-progress {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 0%;
+      background: var(--harvest-green);
+      transform: translateX(-50%);
+    }
+
+    .roadmap-nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .node {
+      width: calc(50% - 60px);
+      background: rgba(253, 250, 246, 0.7);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(0, 146, 74, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    /* Left Side (Odd) */
+    .node:nth-child(odd):not(.finale) {
+      align-self: flex-start;
+      text-align: right;
+    }
+    .node:nth-child(odd):not(.finale)::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      right: -66px; /* 60px gap + 6px (half of 12px dot) */
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--harvest-green);
+      z-index: 10;
+    }
+
+    /* Right Side (Even) */
+    .node:nth-child(even):not(.finale) {
+      align-self: flex-end;
+      text-align: left;
+    }
+    .node:nth-child(even):not(.finale)::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: -66px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--harvest-green);
+      z-index: 10;
+    }
+
+    /* Center Finale */
+    .node.finale {
+      width: 100%;
+      max-width: 600px;
+      align-self: center;
+      text-align: center;
+      background: var(--harvest-green);
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 146, 74, 0.2);
+      border: none;
+    }
+    .node.finale::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--harvest-green);
+      border: 4px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--harvest-green);
+      z-index: 10;
+    }
+
+    .node.past {
+      opacity: 0.4;
+      filter: grayscale(100%);
+    }
+
+    .node.past::before {
+      background: var(--harvest-green);
+      border-color: var(--harvest-green);
+    }
+
+    .node.upcoming {
+      border: 1px solid var(--harvest-green);
+      box-shadow: 0 15px 40px rgba(0, 146, 74, 0.15);
+      transform: translateY(-8px);
+    }
+
+    .node.upcoming::after {
+      content: attr(data-badge);
+      position: absolute;
+      top: -12px;
+      background: var(--harvest-green);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 146, 74, 0.3);
+      z-index: 10;
+    }
+
+    /* Badge positioning */
+    .node:nth-child(odd):not(.finale).upcoming::after {
+      left: 24px;
+    }
+    .node:nth-child(even):not(.finale).upcoming::after {
+      right: 24px;
+    }
+    .node.finale.upcoming::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .node.upcoming::before {
+      background: var(--harvest-green);
+      box-shadow: 0 0 0 4px rgba(0, 146, 74, 0.2);
+    }
+
+    /* Mobile Left-Aligned Override */
+    @media (max-width: 768px) {
+      .roadmap-container {
+        padding-left: 40px;
+      }
+      .roadmap-track {
+        left: 0;
+        transform: none;
+      }
+      .roadmap-progress {
+        left: 0;
+        transform: none;
+      }
+      .node {
+        width: 100%;
+        max-width: 100%;
+      }
+      .node:nth-child(n) {
+        align-self: flex-start;
+        text-align: left;
+      }
+      .node:nth-child(odd):not(.finale)::before,
+      .node:nth-child(even):not(.finale)::before {
+        left: -45px;
+        right: auto;
+      }
+      .node.finale {
+        max-width: 100%;
+      }
+      .node.finale::before {
+        top: 40px;
+        left: -45px;
+        transform: none;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--harvest-green);
+        box-shadow: none;
+      }
+      .node:nth-child(n).upcoming::after {
+        left: auto;
+        right: 24px;
+        transform: none;
+      }
+    }
+
+    .node.finale .node-title,
+    .node.finale .node-desc {
+      color: #fff;
+    }
+
+    .node-date {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--harvest-dark);
+      margin-bottom: 12px;
+      display: block;
+      font-weight: 700;
+    }
+
+    .node.finale .node-date {
+      color: var(--mint);
+    }
+
+    .node-title {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .node-desc {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* Events / Gallery */
+    .gallery-sec {
+      padding: 120px 8vw;
+      background: var(--bg);
+      position: relative;
+      border-top: 1px solid var(--border);
+    }
+
+    .gallery-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gallery-item {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .gallery-item:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .gallery-name {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      font-size: clamp(32px, 4.5vw, 60px);
+      transition: color 0.4s, transform 0.4s;
+      color: var(--text);
+    }
+
+    .gallery-item:hover .gallery-name {
+      color: var(--harvest-green);
+      transform: translateX(20px);
+    }
+
+    .gallery-arrow {
+      font-size: 32px;
+      opacity: 0;
+      transition: opacity 0.4s, transform 0.4s;
+      transform: translateX(-20px);
+      color: var(--harvest-green);
+    }
+
+    .gallery-item:hover .gallery-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .cursor-img-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 200px;
+      margin-top: -100px;
+      margin-left: -150px;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.4s, transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+      z-index: 99;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .cursor-img-container.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .cursor-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .cursor-img-container img.active {
+      display: block;
+    }
+
+    /* Contact */
+    .contact-sec {
+      padding: 40px 8vw 120px;
+      text-align: center;
+      background: var(--bg);
+      position: relative;
+      z-index: 2;
+    }
+
+    .contact-title {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      font-size: clamp(40px, 7vw, 80px);
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+
+    .contact-email {
+      font-family: var(--font-sans);
+      font-size: clamp(18px, 2.5vw, 28px);
+      color: var(--harvest-green);
+      text-decoration: none;
+      position: relative;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .contact-email::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--harvest-green);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+      transform-origin: right;
+    }
+
+    .contact-email:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Spotlights & Grain -->
@@ -377,9 +1090,16 @@
     </nav>
 
     <section class="hero" aria-label="Event details">
-      
+
       <!-- 3D Flyer -->
       <div class="flyer-container">
+        <div class="flyer-cta-header">
+          <h2 class="cta-title">
+            <span class="live-dot"></span>
+            Register for Summer Camp Now
+          </h2>
+          <p class="cta-deadline">Deadline : August 10th 2026</p>
+        </div>
         <div class="flyer-wrap" id="flyerWrap">
           <div class="flyer-shadow"></div>
           <img class="flyer-img" src="lp35summercamp.jpeg" alt="ARISE Summer Camp">
@@ -437,11 +1157,157 @@
             </button>
           </div>
         </div>
-        
+
       </div>
     </section>
 
+    <!-- About Section -->
+    <section class="section-pad about-sec" style="padding-bottom: 20px;">
+      <h2 class="about-text" id="revealText">
+        <span class="word">A</span>
+        <span class="word">summer</span>
+        <span class="word">of</span>
+        <em class="word">impact,</em>
+        <span class="word">growth,</span>
+        <span class="word">and</span>
+        <span class="word">divine</span>
+        <span class="word">connection.</span>
+        <span class="word">Preparing</span>
+        <span class="word">the</span>
+        <span class="word">next</span>
+        <span class="word">generation</span>
+        <span class="word">for</span>
+        <span class="word">greatness.</span>
+      </h2>
+    </section>
+
+    <!-- Roadmap Schedule (GSAP Horizontal Scroll) -->
+    <section class="roadmap-wrapper" id="roadmapWrapper">
+      <div class="roadmap-header">
+        <h2>Summer Program Schedule</h2>
+      </div>
+      <div class="roadmap-container" id="roadmapContainer">
+        <div class="roadmap-track">
+          <div class="roadmap-progress" id="roadmapProgress"></div>
+        </div>
+        <div class="roadmap-nodes">
+          <div class="node" data-date="2026/06/28">
+            <span class="node-date">Sun, June 28</span>
+            <h3 class="node-title">Kickoff Sunday</h3>
+            <p class="node-desc">Teams Formation. Arise: The Summer Kickoff.</p>
+          </div>
+          <div class="node" data-date="2026/07/05">
+            <span class="node-date">Sun, July 5</span>
+            <h3 class="node-title">Arise and Shine I</h3>
+            <p class="node-desc">Car Wash and Sales Sunday.</p>
+          </div>
+          <div class="node" data-date="2026/07/11">
+            <span class="node-date">Sat, July 11</span>
+            <h3 class="node-title">Arise Showcase</h3>
+            <p class="node-desc">Decoration Competition and Karaoke.</p>
+          </div>
+          <div class="node" data-date="2026/07/12">
+            <span class="node-date">Sun, July 12</span>
+            <h3 class="node-title">Lights, Camera, Arise!</h3>
+            <p class="node-desc">Movie Sunday.</p>
+          </div>
+          <div class="node" data-date="2026/07/18">
+            <span class="node-date">Sat, July 18</span>
+            <h3 class="node-title">Christ Church Clean Up</h3>
+            <p class="node-desc">CSR (Corporate Social Responsibility).</p>
+          </div>
+          <div class="node" data-date="2026/07/19">
+            <span class="node-date">Sun, July 19</span>
+            <h3 class="node-title">The Word Unfolded</h3>
+            <p class="node-desc">Deep dive into the Word.</p>
+          </div>
+          <div class="node" data-date="2026/07/25">
+            <span class="node-date">Sat, July 25</span>
+            <h3 class="node-title">Flame & Flavour Fest</h3>
+            <p class="node-desc">Cooking Competition & DJ Rave.</p>
+          </div>
+          <div class="node" data-date="2026/07/26">
+            <span class="node-date">Sun, July 26</span>
+            <h3 class="node-title">Evangelism</h3>
+            <p class="node-desc">CAN Sunday.</p>
+          </div>
+          <div class="node" data-date="2026/08/01">
+            <span class="node-date">Sat, August 1</span>
+            <h3 class="node-title">Arise Adventure Day</h3>
+            <p class="node-desc">Summer Excursion.</p>
+          </div>
+          <div class="node" data-date="2026/08/02">
+            <span class="node-date">Sun, August 2</span>
+            <h3 class="node-title">Exhortation & Color Sunday</h3>
+            <p class="node-desc">A vibrant Sunday of encouragement.</p>
+          </div>
+          <div class="node" data-date="2026/08/09">
+            <span class="node-date">Aug 3 - Aug 9</span>
+            <h3 class="node-title">RCCG Annual Convention</h3>
+            <p class="node-desc">National church gathering.</p>
+          </div>
+          <div class="node" data-date="2026/08/15">
+            <span class="node-date">Sat, August 15</span>
+            <h3 class="node-title">Outdoor Games</h3>
+            <p class="node-desc">Team Bonding.</p>
+          </div>
+          <div class="node" data-date="2026/08/16">
+            <span class="node-date">Sun, August 16</span>
+            <h3 class="node-title">Arise and Shine II</h3>
+            <p class="node-desc">Car Wash and Sales Sunday.</p>
+          </div>
+          <div class="node finale" data-date="2026/08/23">
+            <span class="node-date">Aug 20 - 23</span>
+            <h3 class="node-title">Summer Camp-Out</h3>
+            <p class="node-desc">The grand finale! Thursday to Sunday.</p>
+          </div>
+          <div class="node" data-date="2026/09/20">
+            <span class="node-date">Sun, Sept 20</span>
+            <h3 class="node-title">Post-Summer Session</h3>
+            <p class="node-desc">Parents Teacher and Teen Interactive Session.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events / Gallery (Magnetic Hover) -->
+    <section class="gallery-sec" style="display: none;">
+      <div class="editorial-kicker" style="margin-bottom: 60px;">
+        <div class="kicker-line"></div>
+        <span class="kicker-text">Camp Activities</span>
+      </div>
+      <ul class="gallery-list">
+        <li class="gallery-item">
+          <h3 class="gallery-name">Worship Sessions</h3>
+          <i class="ph ph-arrow-right gallery-arrow"></i>
+        </li>
+        <li class="gallery-item">
+          <h3 class="gallery-name">Game Nights</h3>
+          <i class="ph ph-arrow-right gallery-arrow"></i>
+        </li>
+        <li class="gallery-item">
+          <h3 class="gallery-name">Cabin Groups</h3>
+          <i class="ph ph-arrow-right gallery-arrow"></i>
+        </li>
+        <li class="gallery-item">
+          <h3 class="gallery-name">Mentorship</h3>
+          <i class="ph ph-arrow-right gallery-arrow"></i>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-sec">
+      <h2 class="contact-title">Have questions?</h2>
+      <a href="mailto:harvesthouseteenschurch@gmail.com" class="contact-email">harvesthouseteenschurch@gmail.com</a>
+    </section>
+
   </div> <!-- End Site Wrapper -->
+
+  <!-- Cursor Follow Image Container -->
+  <div class="cursor-img-container" id="cursorImgContainer">
+    <img src="lp35summercamp.jpeg" alt="Activity" class="active">
+  </div>
 
   <!-- Vibrant Negative Footer -->
   <footer class="site-footer" id="negativeFooter">
@@ -452,11 +1318,13 @@
         Harvest House<br>Teenage Church of RCCG ChristChurch<br>Lagos Province 35
       </div>
       <div class="footer-links-row">
-        <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://instagram.com/rccgharvesthouse" class="footer-link" target="_blank"
+          rel="noopener">Instagram</a>
+        <a href="https://chat.whatsapp.com/KNy5HYYpF10CikeJZ3O3FU" class="footer-link" target="_blank"
+          rel="noopener">WhatsApp</a>
         <a href="mailto:harvesthouseteenschurch@gmail.com" class="footer-link">Email</a>
         <a href="https://www.youtube.com/@harvesthouse4878" class="footer-link">YouTube</a>
-        <a href="https://www.facebook.com.com/harvest.house.77" class="footer-link">Facebook</a>
+        <a href="https://www.facebook.com/harvest.house.77" class="footer-link">Facebook</a>
       </div>
     </div>
   </footer>
@@ -488,17 +1356,17 @@
 
     flyerContainer.addEventListener('mousemove', (e) => {
       const rect = flyerContainer.getBoundingClientRect();
-      const x = e.clientX - rect.left; 
-      const y = e.clientY - rect.top;  
-      
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -15; 
+
+      const rotateX = ((y - centerY) / centerY) * -15;
       const rotateY = ((x - centerX) / centerX) * 15;
-      
+
       flyerWrap.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      
+
       flyerGlare.style.setProperty('--px', (x / rect.width) * 100 + '%');
       flyerGlare.style.setProperty('--py', (y / rect.height) * 100 + '%');
     });
@@ -507,7 +1375,7 @@
       flyerWrap.style.transform = `rotateX(0deg) rotateY(0deg)`;
       flyerWrap.style.transition = `transform 0.6s cubic-bezier(0.2, 1, 0.3, 1)`;
       setTimeout(() => { flyerWrap.style.transition = `transform 0.1s ease-out`; }, 600);
-      
+
       flyerGlare.style.setProperty('--px', '50%');
       flyerGlare.style.setProperty('--py', '50%');
     });
@@ -520,18 +1388,18 @@
         const rect = wrap.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
+
         btn.style.setProperty('--mx', x + 'px');
         btn.style.setProperty('--my', y + 'px');
-        
+
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
         const moveX = (x - centerX) * 0.15;
         const moveY = (y - centerY) * 0.15;
-        
+
         btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
       });
-      
+
       wrap.addEventListener('mouseleave', () => {
         btn.style.transform = `translate(0px, 0px)`;
         btn.style.transition = `transform 0.5s cubic-bezier(0.2, 1, 0.3, 1)`;
@@ -541,8 +1409,8 @@
 
     // Tally Popups Integration (Emojis removed)
     const roleData = {
-      camper:    { formId: 'LZaBX2' },
-      teacher:   { formId: 'Y5JXlq', hideTitle: true, alignLeft: true },
+      camper: { formId: 'LZaBX2' },
+      teacher: { formId: 'Y5JXlq', hideTitle: true, alignLeft: true },
       volunteer: { formId: '5BeoPM', alignLeft: true }
     };
 
@@ -558,10 +1426,144 @@
       };
       if (data.hideTitle) options.hideTitle = true;
       if (data.alignLeft) options.alignLeft = true;
-      
+
       Tally.openPopup(data.formId, options);
     }
+
+    // --- NEW SECTIONS JS ---
+
+    // GSAP Vertical Timeline
+    if (typeof gsap !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      window.addEventListener('load', () => {
+        const nodes = gsap.utils.toArray('.node');
+        
+        // Stagger bloom up for nodes
+        nodes.forEach((node, i) => {
+          const isFinale = node.classList.contains('finale');
+          let startX = 0;
+          let startY = 40;
+          let origin = "center center";
+          
+          // Only alternate slide-in from sides on desktop
+          if (!isFinale && window.innerWidth > 768) {
+            startX = (i % 2 === 0) ? -20 : 20; // Slight slide
+            startY = 0;
+            origin = (i % 2 === 0) ? "right center" : "left center"; // Grow from the trunk!
+            gsap.set(node, { transformOrigin: origin });
+          } else if (isFinale) {
+            gsap.set(node, { transformOrigin: "center top" });
+          }
+
+          gsap.from(node, {
+            scrollTrigger: {
+              trigger: node,
+              start: "top 85%",
+              toggleActions: "play reverse play reverse"
+            },
+            x: startX,
+            y: startY,
+            scale: 0.5, // Pop out effect
+            opacity: 0,
+            duration: 1,
+            ease: "back.out(1.5)" // Springy blooming effect
+          });
+        });
+
+        // Vertical Progress fill
+        const upcomingNode = document.querySelector(".node.upcoming");
+        let fillHeight = "0%";
+        if (upcomingNode) {
+          fillHeight = (upcomingNode.offsetTop + 40) + "px";
+        } else if (document.querySelector(".node.past")) {
+          fillHeight = "100%";
+        }
+        
+        gsap.to("#roadmapProgress", {
+          height: fillHeight,
+          duration: 1.5,
+          ease: "power3.inOut",
+          delay: 0.2
+        });
+        // About Text Word Reveal Animation
+        gsap.to(".word", {
+          opacity: 1,
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: ".about-sec",
+            start: "top 75%",
+            end: "bottom 60%",
+            scrub: 1
+          }
+        });
+
+        // Refresh ScrollTrigger to recalculate footer margins
+        ScrollTrigger.addEventListener("refresh", updateFooterMargin);
+      });
+    }
+
+    // Magnetic Gallery Image Reveal
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const cursorImgContainer = document.getElementById('cursorImgContainer');
+
+    if (galleryItems.length > 0 && cursorImgContainer) {
+      window.addEventListener('mousemove', (e) => {
+        if (typeof gsap !== 'undefined') {
+          gsap.to(cursorImgContainer, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        } else {
+          cursorImgContainer.style.left = e.clientX + 'px';
+          cursorImgContainer.style.top = e.clientY + 'px';
+        }
+      });
+
+      galleryItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+          cursorImgContainer.classList.add('active');
+        });
+        item.addEventListener('mouseleave', () => {
+          cursorImgContainer.classList.remove('active');
+        });
+      });
+    }
+
+    // Dynamic Event Highlight
+    document.addEventListener('DOMContentLoaded', () => {
+      const nodes = document.querySelectorAll('.node[data-date]');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let highlighted = false;
+      nodes.forEach(node => {
+        // Leave the summer camp finale styles strictly alone
+        if (highlighted || node.classList.contains('finale')) return;
+
+        const nodeDate = new Date(node.getAttribute('data-date'));
+        nodeDate.setHours(0, 0, 0, 0);
+
+        // If this event is today or in the future, highlight it!
+        if (nodeDate.getTime() >= today.getTime()) {
+          node.classList.add('upcoming');
+          highlighted = true;
+
+          if (nodeDate.getTime() === today.getTime()) {
+            node.setAttribute('data-badge', 'Happening Today');
+          } else {
+            node.setAttribute('data-badge', 'Up Next');
+          }
+        } else {
+          // Event has already passed
+          node.classList.add('past');
+        }
+      });
+    });
   </script>
 
 </body>
+
 </html>
