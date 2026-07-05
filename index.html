@@ -630,19 +630,16 @@
       opacity: 0.15;
     }
 
-    /* Horizontal Roadmap */
+    /* Vertical Roadmap */
     .roadmap-wrapper {
-      overflow: hidden;
       background: var(--bg);
       position: relative;
       z-index: 2;
+      padding: 60px 8vw 120px;
     }
 
     .roadmap-header {
-      position: absolute;
-      top: 40px;
-      left: 8vw;
-      z-index: 10;
+      margin-bottom: 60px;
     }
 
     .roadmap-header h2 {
@@ -654,42 +651,43 @@
     }
 
     .roadmap-container {
-      display: flex;
-      width: max-content;
-      height: auto;
-      padding: 160px 15vw 120px 10vw;
-      align-items: center;
       position: relative;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0;
     }
 
     .roadmap-track {
       position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 2px;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
       background: rgba(0, 146, 74, 0.1);
-      transform: translateY(-50%);
+      transform: translateX(-50%);
     }
 
     .roadmap-progress {
       position: absolute;
       top: 0;
-      left: 0;
-      height: 100%;
-      width: 0%;
+      left: 50%;
+      width: 2px;
+      height: 0%;
       background: var(--harvest-green);
+      transform: translateX(-50%);
     }
 
     .roadmap-nodes {
       display: flex;
-      gap: 8vw;
+      flex-direction: column;
+      gap: 60px;
       position: relative;
       z-index: 2;
     }
 
     .node {
-      width: 300px;
+      width: calc(50% - 60px);
       background: rgba(253, 250, 246, 0.7);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
@@ -697,12 +695,79 @@
       border-radius: 20px;
       padding: 32px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-      transition: transform 0.4s, box-shadow 0.4s;
+      position: relative;
+    }
+
+    /* Left Side (Odd) */
+    .node:nth-child(odd):not(.finale) {
+      align-self: flex-start;
+      text-align: right;
+    }
+    .node:nth-child(odd):not(.finale)::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      right: -66px; /* 60px gap + 6px (half of 12px dot) */
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--harvest-green);
+      z-index: 10;
+    }
+
+    /* Right Side (Even) */
+    .node:nth-child(even):not(.finale) {
+      align-self: flex-end;
+      text-align: left;
+    }
+    .node:nth-child(even):not(.finale)::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: -66px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--harvest-green);
+      z-index: 10;
+    }
+
+    /* Center Finale */
+    .node.finale {
+      width: 100%;
+      max-width: 600px;
+      align-self: center;
+      text-align: center;
+      background: var(--harvest-green);
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 146, 74, 0.2);
+      border: none;
+    }
+    .node.finale::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--harvest-green);
+      border: 4px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--harvest-green);
+      z-index: 10;
     }
 
     .node.past {
       opacity: 0.4;
       filter: grayscale(100%);
+    }
+
+    .node.past::before {
+      background: var(--harvest-green);
+      border-color: var(--harvest-green);
     }
 
     .node.upcoming {
@@ -711,11 +776,10 @@
       transform: translateY(-8px);
     }
 
-    .node.upcoming::before {
+    .node.upcoming::after {
       content: attr(data-badge);
       position: absolute;
       top: -12px;
-      right: 24px;
       background: var(--harvest-green);
       color: #fff;
       font-family: var(--font-mono);
@@ -729,12 +793,66 @@
       z-index: 10;
     }
 
-    .node.finale {
-      width: 360px;
+    /* Badge positioning */
+    .node:nth-child(odd):not(.finale).upcoming::after {
+      left: 24px;
+    }
+    .node:nth-child(even):not(.finale).upcoming::after {
+      right: 24px;
+    }
+    .node.finale.upcoming::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .node.upcoming::before {
       background: var(--harvest-green);
-      color: #fff;
-      box-shadow: 0 20px 60px rgba(0, 146, 74, 0.2);
-      border: none;
+      box-shadow: 0 0 0 4px rgba(0, 146, 74, 0.2);
+    }
+
+    /* Mobile Left-Aligned Override */
+    @media (max-width: 768px) {
+      .roadmap-container {
+        padding-left: 40px;
+      }
+      .roadmap-track {
+        left: 0;
+        transform: none;
+      }
+      .roadmap-progress {
+        left: 0;
+        transform: none;
+      }
+      .node {
+        width: 100%;
+        max-width: 100%;
+      }
+      .node:nth-child(n) {
+        align-self: flex-start;
+        text-align: left;
+      }
+      .node:nth-child(odd):not(.finale)::before,
+      .node:nth-child(even):not(.finale)::before {
+        left: -45px;
+        right: auto;
+      }
+      .node.finale {
+        max-width: 100%;
+      }
+      .node.finale::before {
+        top: 40px;
+        left: -45px;
+        transform: none;
+        width: 12px;
+        height: 12px;
+        border: 2px solid var(--harvest-green);
+        box-shadow: none;
+      }
+      .node:nth-child(n).upcoming::after {
+        left: auto;
+        right: 24px;
+        transform: none;
+      }
     }
 
     .node.finale .node-title,
@@ -1263,62 +1381,59 @@
 
     // --- NEW SECTIONS JS ---
 
-    // GSAP Horizontal Scroll Roadmap
+    // GSAP Vertical Timeline
     if (typeof gsap !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
 
-      const roadmapContainer = document.getElementById('roadmapContainer');
-      const roadmapProgress = document.getElementById('roadmapProgress');
-
-      // Wait for layout to settle before calculating widths
       window.addEventListener('load', () => {
-        function getScrollAmount() {
-          let roadmapWidth = roadmapContainer.scrollWidth;
-          return (roadmapWidth - window.innerWidth);
-        }
-
-        let startX = 0;
-        const upcomingNode = document.querySelector(".node.upcoming");
-        if (upcomingNode) {
-          const paddingLeft = window.innerWidth * 0.15;
-          startX = upcomingNode.offsetLeft - paddingLeft;
-          if (startX < 0) startX = 0;
-          const maxPossible = getScrollAmount();
-          if (startX > maxPossible) startX = maxPossible;
-        }
-
-        const tween = gsap.fromTo(roadmapContainer, {
-          x: -startX
-        }, {
-          x: () => -getScrollAmount(),
-          ease: "none"
-        });
-
-        ScrollTrigger.create({
-          trigger: "#roadmapWrapper",
-          start: "center center",
-          end: () => `+=${getScrollAmount() - startX}`,
-          pin: true,
-          animation: tween,
-          scrub: 1,
-          invalidateOnRefresh: true
-        });
-
-        // Progress bar fill
-        const trackWidth = document.querySelector(".roadmap-track").offsetWidth;
-        const startProgress = (startX / trackWidth) * 100;
+        const nodes = gsap.utils.toArray('.node');
         
-        gsap.fromTo(roadmapProgress, {
-          width: `${startProgress}%`
-        }, {
-          width: "100%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#roadmapWrapper",
-            start: "center center",
-            end: () => `+=${getScrollAmount() - startX}`,
-            scrub: 1
+        // Stagger bloom up for nodes
+        nodes.forEach((node, i) => {
+          const isFinale = node.classList.contains('finale');
+          let startX = 0;
+          let startY = 40;
+          let origin = "center center";
+          
+          // Only alternate slide-in from sides on desktop
+          if (!isFinale && window.innerWidth > 768) {
+            startX = (i % 2 === 0) ? -20 : 20; // Slight slide
+            startY = 0;
+            origin = (i % 2 === 0) ? "right center" : "left center"; // Grow from the trunk!
+            gsap.set(node, { transformOrigin: origin });
+          } else if (isFinale) {
+            gsap.set(node, { transformOrigin: "center top" });
           }
+
+          gsap.from(node, {
+            scrollTrigger: {
+              trigger: node,
+              start: "top 85%",
+              toggleActions: "play reverse play reverse"
+            },
+            x: startX,
+            y: startY,
+            scale: 0.5, // Pop out effect
+            opacity: 0,
+            duration: 1,
+            ease: "back.out(1.5)" // Springy blooming effect
+          });
+        });
+
+        // Vertical Progress fill
+        const upcomingNode = document.querySelector(".node.upcoming");
+        let fillHeight = "0%";
+        if (upcomingNode) {
+          fillHeight = (upcomingNode.offsetTop + 40) + "px";
+        } else if (document.querySelector(".node.past")) {
+          fillHeight = "100%";
+        }
+        
+        gsap.to("#roadmapProgress", {
+          height: fillHeight,
+          duration: 1.5,
+          ease: "power3.inOut",
+          delay: 0.2
         });
         // About Text Word Reveal Animation
         gsap.to(".word", {
