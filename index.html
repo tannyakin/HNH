@@ -1191,77 +1191,77 @@
           <div class="roadmap-progress" id="roadmapProgress"></div>
         </div>
         <div class="roadmap-nodes">
-          <div class="node" data-date="2026/06/28">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/06/28">
             <span class="node-date">Sun, June 28</span>
             <h3 class="node-title">Kickoff Sunday</h3>
             <p class="node-desc">Teams Formation. Arise: The Summer Kickoff.</p>
           </div>
-          <div class="node" data-date="2026/07/05">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/05">
             <span class="node-date">Sun, July 5</span>
             <h3 class="node-title">Arise and Shine I</h3>
             <p class="node-desc">Car Wash and Sales Sunday.</p>
           </div>
-          <div class="node" data-date="2026/07/11">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/11">
             <span class="node-date">Sat, July 11</span>
             <h3 class="node-title">Arise Showcase</h3>
             <p class="node-desc">Decoration Competition and Karaoke.</p>
           </div>
-          <div class="node" data-date="2026/07/12">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/12">
             <span class="node-date">Sun, July 12</span>
             <h3 class="node-title">Lights, Camera, Arise!</h3>
             <p class="node-desc">Movie Sunday.</p>
           </div>
-          <div class="node" data-date="2026/07/18">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/18">
             <span class="node-date">Sat, July 18</span>
             <h3 class="node-title">Christ Church Clean Up</h3>
             <p class="node-desc">CSR (Corporate Social Responsibility).</p>
           </div>
-          <div class="node" data-date="2026/07/19">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/19">
             <span class="node-date">Sun, July 19</span>
             <h3 class="node-title">The Word Unfolded</h3>
             <p class="node-desc">Deep dive into the Word.</p>
           </div>
-          <div class="node" data-date="2026/07/25">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/25">
             <span class="node-date">Sat, July 25</span>
             <h3 class="node-title">Flame & Flavour Fest</h3>
             <p class="node-desc">Cooking Competition & DJ Rave.</p>
           </div>
-          <div class="node" data-date="2026/07/26">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/07/26">
             <span class="node-date">Sun, July 26</span>
             <h3 class="node-title">Evangelism</h3>
             <p class="node-desc">CAN Sunday.</p>
           </div>
-          <div class="node" data-date="2026/08/01">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/08/01">
             <span class="node-date">Sat, August 1</span>
             <h3 class="node-title">Arise Adventure Day</h3>
             <p class="node-desc">Summer Excursion.</p>
           </div>
-          <div class="node" data-date="2026/08/02">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/08/02">
             <span class="node-date">Sun, August 2</span>
             <h3 class="node-title">Exhortation & Color Sunday</h3>
             <p class="node-desc">A vibrant Sunday of encouragement.</p>
           </div>
-          <div class="node" data-date="2026/08/09">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/08/09">
             <span class="node-date">Aug 3 - Aug 9</span>
             <h3 class="node-title">RCCG Annual Convention</h3>
             <p class="node-desc">National church gathering.</p>
           </div>
-          <div class="node" data-date="2026/08/15">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/08/15">
             <span class="node-date">Sat, August 15</span>
             <h3 class="node-title">Outdoor Games</h3>
             <p class="node-desc">Team Bonding.</p>
           </div>
-          <div class="node" data-date="2026/08/16">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/08/16">
             <span class="node-date">Sun, August 16</span>
             <h3 class="node-title">Arise and Shine II</h3>
             <p class="node-desc">Car Wash and Sales Sunday.</p>
           </div>
-          <div class="node finale" data-date="2026/08/23">
+          <div class="node finale" data-image="lp35summercamp.jpeg" data-date="2026/08/23">
             <span class="node-date">Aug 20 - 23</span>
             <h3 class="node-title">Summer Camp-Out</h3>
             <p class="node-desc">The grand finale! Thursday to Sunday.</p>
           </div>
-          <div class="node" data-date="2026/09/20">
+          <div class="node" data-image="lp35summercamp.jpeg" data-date="2026/09/20">
             <span class="node-date">Sun, Sept 20</span>
             <h3 class="node-title">Post-Summer Session</h3>
             <p class="node-desc">Parents Teacher and Teen Interactive Session.</p>
@@ -1503,11 +1503,12 @@
       });
     }
 
-    // Magnetic Gallery Image Reveal
-    const galleryItems = document.querySelectorAll('.gallery-item');
+    // Magnetic Image Reveal (Gallery & Schedule Nodes)
+    const hoverItems = document.querySelectorAll('.gallery-item, .node');
     const cursorImgContainer = document.getElementById('cursorImgContainer');
+    const cursorImg = cursorImgContainer ? cursorImgContainer.querySelector('img') : null;
 
-    if (galleryItems.length > 0 && cursorImgContainer) {
+    if (hoverItems.length > 0 && cursorImgContainer && cursorImg) {
       window.addEventListener('mousemove', (e) => {
         if (typeof gsap !== 'undefined') {
           gsap.to(cursorImgContainer, {
@@ -1522,8 +1523,12 @@
         }
       });
 
-      galleryItems.forEach(item => {
+      hoverItems.forEach(item => {
         item.addEventListener('mouseenter', () => {
+          const newSrc = item.getAttribute('data-image');
+          if (newSrc) {
+            cursorImg.src = newSrc;
+          }
           cursorImgContainer.classList.add('active');
         });
         item.addEventListener('mouseleave', () => {
