@@ -1526,10 +1526,18 @@
       hoverItems.forEach(item => {
         item.addEventListener('mouseenter', () => {
           const newSrc = item.getAttribute('data-image');
-          if (newSrc) {
-            cursorImg.src = newSrc;
+          
+          if (item.classList.contains('node')) {
+            // Only activate if the schedule node has a flyer assigned
+            if (newSrc) {
+              cursorImg.src = newSrc;
+              cursorImgContainer.classList.add('active');
+            }
+          } else {
+            // Gallery items always activate, defaulting to the camp flyer
+            cursorImg.src = newSrc || 'lp35summercamp.jpeg';
+            cursorImgContainer.classList.add('active');
           }
-          cursorImgContainer.classList.add('active');
         });
         item.addEventListener('mouseleave', () => {
           cursorImgContainer.classList.remove('active');
