@@ -1070,6 +1070,111 @@
       transform: scaleX(1);
       transform-origin: left;
     }
+    /* --- GATEKEEPER MODAL --- */
+    .gatekeeper-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 46, 28, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .gatekeeper-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .gatekeeper-modal {
+      background: rgba(253, 250, 246, 0.95);
+      border: 1px solid rgba(0, 146, 74, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      transform: translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+      text-align: center;
+    }
+    .gatekeeper-overlay.active .gatekeeper-modal {
+      transform: translateY(0);
+    }
+    .gatekeeper-title {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .gatekeeper-desc {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .gatekeeper-input {
+      width: 100%;
+      background: #fff;
+      border: 1px solid rgba(0, 146, 74, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+      text-align: center;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .gatekeeper-input:focus {
+      border-color: var(--harvest-green);
+    }
+    .gatekeeper-error {
+      color: #e07a5f;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      height: 16px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .gatekeeper-btn {
+      width: 100%;
+      background: var(--harvest-green);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+    }
+    .gatekeeper-btn:hover {
+      background: var(--harvest-dark);
+    }
+    .gatekeeper-btn:active {
+      transform: scale(0.98);
+    }
+    .gatekeeper-close {
+      margin-top: 16px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -1329,6 +1434,18 @@
     </div>
   </footer>
 
+  <!-- Gatekeeper Modal -->
+  <div class="gatekeeper-overlay" id="gatekeeperOverlay">
+    <div class="gatekeeper-modal">
+      <h3 class="gatekeeper-title">Volunteer Access</h3>
+      <p class="gatekeeper-desc">Please enter your assigned unique volunteer code to continue.</p>
+      <input type="text" class="gatekeeper-input" id="gatekeeperInput" placeholder="VOL-XXXX-XXX" autocomplete="off">
+      <div class="gatekeeper-error" id="gatekeeperError">Invalid code. Please try again.</div>
+      <button class="gatekeeper-btn" onclick="verifyVolunteerCode()">Verify & Proceed</button>
+      <button class="gatekeeper-close" onclick="closeGatekeeper()">Cancel</button>
+    </div>
+  </div>
+
   <script>
     // Force page to always load at the top
     if ('scrollRestoration' in history) {
@@ -1419,7 +1536,96 @@
       volunteer: { formId: '5BeoPM', alignLeft: true }
     };
 
+    // Pre-hashed valid codes
+    const VALID_VOLUNTEER_HASHES = [
+      "c68fb76fbe6a6193ddb8e4709883093aad30e96045d6ba3aba5049b9aaed75e9", // VOL-2026-123
+      "6f0700ebe2b7a33779f60079254dfe761821e0a1aa7164a6a352dfae5e1e4d87", // VOL-2026-ABC
+      "c51fd0b24b0e48c5db2cf05afebdb7fcc97ae5de5933841e0e0ed1f0f654cfc7"  // TESTCODE
+    ];
+
+    async function hashString(str) {
+      const msgBuffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function openGatekeeper() {
+      document.getElementById('gatekeeperInput').value = '';
+      document.getElementById('gatekeeperError').style.opacity = '0';
+      document.getElementById('gatekeeperOverlay').classList.add('active');
+      
+      // Delay focus slightly for the modal to animate in
+      setTimeout(() => document.getElementById('gatekeeperInput').focus(), 100);
+    }
+
+    function closeGatekeeper() {
+      document.getElementById('gatekeeperOverlay').classList.remove('active');
+    }
+
+    async function verifyVolunteerCode() {
+      const inputEl = document.getElementById('gatekeeperInput');
+      const errorEl = document.getElementById('gatekeeperError');
+      const code = inputEl.value.trim().toUpperCase();
+
+      if (!code) {
+        errorEl.textContent = 'Please enter a code.';
+        errorEl.style.opacity = '1';
+        return;
+      }
+
+      // Hash the input and check
+      const hash = await hashString(code);
+      if (VALID_VOLUNTEER_HASHES.includes(hash)) {
+        closeGatekeeper();
+        
+        // Open Tally and auto-fill the field
+        if (!window.Tally) {
+          console.warn('Tally script not loaded yet.');
+          return;
+        }
+        
+        const data = roleData['volunteer'];
+        const options = {
+          layout: 'modal',
+          width: 800,
+          hiddenFields: {
+            // Pass the verified code into Tally
+            // Note: The organizer needs to make sure the Tally field is named 'volunteer_code' 
+            // or we pass it directly to whatever field ID they specify.
+            volunteer_code: code 
+          }
+        };
+        if (data.hideTitle) options.hideTitle = true;
+        if (data.alignLeft) options.alignLeft = true;
+        
+        Tally.openPopup(data.formId, options);
+      } else {
+        errorEl.textContent = 'Invalid code. Please try again.';
+        errorEl.style.opacity = '1';
+      }
+    }
+
+    // Allow pressing Enter to verify
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('gatekeeperInput');
+      if(input) {
+        input.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            verifyVolunteerCode();
+          }
+        });
+      }
+    });
+
     function selectRole(role) {
+      // Intercept volunteer
+      if (role === 'volunteer') {
+        openGatekeeper();
+        return;
+      }
+
+      // Normal behavior for others
       if (!window.Tally) {
         console.warn('Tally script not loaded yet.');
         return;
