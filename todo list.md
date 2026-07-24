@@ -13,4 +13,4 @@
 
 ## General
 - [ ] Review mobile responsiveness
-- [ ] Update form fields if necessary
+- [x] Update form fields if necessary

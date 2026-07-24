@@ -48,6 +48,12 @@ The registration buttons (`.role-btn`) feature a sophisticated magnetic hover ef
 The main hero image (`.flyer-img`) is wrapped in a container that reacts to mouse movement.
 - **Javascript Logic:** Calculates cursor position and applies dynamic `rotateX` and `rotateY` transforms to create a deep 3D perspective effect. It also moves a subtle `mix-blend-mode` glare over the image for realism.
 
+### 4. Volunteer Gatekeeper Modal
+The Volunteer registration requires an assigned code to prevent unauthorized access.
+- **Frontend Security:** We use `crypto.subtle.digest('SHA-256')` to hash user input on the frontend.
+- **Validation:** The hashed input is compared against `VALID_VOLUNTEER_HASHES` stored in the Javascript. The raw codes are never exposed in the source code.
+- **Auto-fill Handoff:** Once verified, the modal closes and `Tally.openPopup` is called, passing the code via `hiddenFields: { volunteer_code: code }`. The Tally form is configured to use this hidden field as the default answer for the visible assigned code block.
+
 ## 📝 Tally Form Integrations
 The site triggers Tally.so forms using their Javascript API (`Tally.openPopup`). 
 - Do not use hidden iframes.
