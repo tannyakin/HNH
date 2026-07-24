@@ -1102,7 +1102,7 @@
         </div>
         <div class="flyer-wrap" id="flyerWrap">
           <div class="flyer-shadow"></div>
-          <img class="flyer-img" src="lp35summercamp.jpeg" alt="ARISE Summer Camp">
+          <img class="flyer-img" src="assets/flyers/summerfinal.webp" alt="ARISE Summer Camp">
           <div class="flyer-glare" id="flyerGlare"></div>
         </div>
       </div>
@@ -1256,7 +1256,7 @@
             <h3 class="node-title">Arise and Shine II</h3>
             <p class="node-desc">Car Wash and Sales Sunday.</p>
           </div>
-          <div class="node finale" data-date="2026/08/23" data-image="lp35summercamp.jpeg">
+          <div class="node finale" data-date="2026/08/23" data-image="assets/flyers/summerfinal.webp">
             <span class="node-date">Aug 20 - 23</span>
             <h3 class="node-title">Summer Camp-Out</h3>
             <p class="node-desc">The grand finale! Thursday to Sunday.</p>
@@ -1306,7 +1306,7 @@
 
   <!-- Cursor Follow Image Container -->
   <div class="cursor-img-container" id="cursorImgContainer">
-    <img src="lp35summercamp.jpeg" alt="Activity" class="active">
+    <img src="assets/flyers/summerfinal.webp" alt="Activity" class="active">
   </div>
 
   <!-- Vibrant Negative Footer -->
@@ -1330,6 +1330,11 @@
   </footer>
 
   <script>
+    // Force page to always load at the top
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
     // Negative Footer Dynamic Margin Calculation
     function updateFooterMargin() {
       if (window.innerWidth > 768) {
@@ -1535,7 +1540,7 @@
             }
           } else {
             // Gallery items always activate, defaulting to the camp flyer
-            cursorImg.src = newSrc || 'lp35summercamp.jpeg';
+            cursorImg.src = newSrc || 'assets/flyers/summerfinal.webp';
             cursorImgContainer.classList.add('active');
           }
         });
